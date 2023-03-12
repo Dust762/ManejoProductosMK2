@@ -15,4 +15,5 @@ public interface ITienda {
     public void modificarProducto(Producto p, int id);
     public void eliminarProducto(Producto p);
     public void eliminarCliente(Cliente c);
+    public void descontarProducto(int cantidad, int idProducto);
 }

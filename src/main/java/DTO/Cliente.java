@@ -56,6 +56,9 @@ public class Cliente {
     }
     @Override
     public String toString() {
-        return "Cliente{" + "id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + ", productos=" + productos + '}';
+        String datosCliente = "ID: " + id + "\n" +
+        "Nombre del cliente: " + nombre + " " + apellido + "\n" +
+        "Productos: " + productos;
+        return datosCliente;
     }
 }

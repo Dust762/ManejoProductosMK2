@@ -84,4 +84,11 @@ public class Tienda implements ITienda{
         }
         return null;
     }
+
+    @Override
+    public void descontarProducto(int cantidad, int idProducto) {
+        Producto tmp = buscarProducto(idProducto);
+        tmp.setCantidad(tmp.getCantidad()-cantidad);
+        modificarProducto(tmp, idProducto);
+    }
 }
