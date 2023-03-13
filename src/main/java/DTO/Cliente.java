@@ -56,6 +56,7 @@ public class Cliente {
     }
     @Override
     public String toString() {
+        
         String datosCliente = "ID: " + id + "\n" +
         "Nombre del cliente: " + nombre + " " + apellido + "\n" +
         "Productos: " + productos;

@@ -1,25 +1,29 @@
 package DTO;
 
 public class Producto {
+
     private int idProd;
     private String nombre;
     private String marca;
     private int cantidad;
     static private int contadorProd;
     private int precio;
-    public Producto(String nombre, String marca, int cantidad, int precio){
+
+    public Producto(String nombre, String marca, int cantidad, int precio) {
         this.idProd = ++Producto.contadorProd;
         this.nombre = nombre;
         this.marca = marca;
         this.cantidad = cantidad;
         this.precio = precio;
     }
-    
-    public Producto(int id,String nombre ,int cantidad){
+
+    public Producto(int id, String nombre, int cantidad, int precio) {
         this.idProd = id;
+        this.nombre = nombre;
         this.cantidad = cantidad;
-        
+        this.precio = precio;
     }
+
     //Crear constructor con id y cantidad para las compras
     public int getIdProd() {
         return idProd;
@@ -64,8 +68,15 @@ public class Producto {
     @Override
     public String toString() {
         String datosProducto;
-        datosProducto = "ID: " + idProd + ", Nombre: " + nombre + "\n" + 
-                "Marca: " + marca + ", Cantidad: " + cantidad + ", Precio: " + precio;
+        if (marca != null) {
+
+            datosProducto = "ID: " + idProd + ", Nombre: " + nombre + "\n"
+                    + "Marca: " + marca + ", Cantidad: " + cantidad + ", Precio: " + precio;
+            return datosProducto;
+        }
+        datosProducto = "ID: " + idProd + ", Nombre: " + nombre + "\n"
+                + "Cantidad: " + cantidad + ", Precio: " + precio;
         return datosProducto;
     }
+
 }

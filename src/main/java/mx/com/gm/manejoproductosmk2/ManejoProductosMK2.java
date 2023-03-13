@@ -3,16 +3,20 @@ package mx.com.gm.manejoproductosmk2;
 import BDLOCAL.Tienda;
 import DAO.ITienda;
 import DTO.Cliente;
+import DTO.Factura;
 import DTO.Producto;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ManejoProductosMK2 {
-    
+
     static ITienda tienda = new Tienda();
     static BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-    
+
     public static void main(String[] args) throws IOException {
         int sel = -1;
         do {
@@ -38,11 +42,11 @@ public class ManejoProductosMK2 {
                 default:
                     System.out.println("opcion no valida");
             }
-            
+
         } while (sel != 3);
         bf.close();
     }
-    
+
     private static void menuClientes() throws IOException {
         int sel = -1;
         do {
@@ -95,7 +99,7 @@ public class ManejoProductosMK2 {
             }
         } while (sel != 9);
     }
-    
+
     private static void menuProductos() throws IOException {
         int sel = -1;
         do {
@@ -132,7 +136,7 @@ public class ManejoProductosMK2 {
             }
         } while (sel != 5);
     }
-    
+
     private static void listarClientes() {
         System.out.println("Listando clientes");
         if (tienda.retornarClientes().size() > 0) {
@@ -144,7 +148,7 @@ public class ManejoProductosMK2 {
             System.out.println("");
         }
     }
-    
+
     private static void crearCliente() throws IOException {
         String nombre, apellido;
         do {
@@ -157,8 +161,9 @@ public class ManejoProductosMK2 {
         } while (apellido.isEmpty());
         Cliente c = new Cliente(nombre, apellido);
         tienda.crearCliente(c);
+
     }
-    
+
     private static void modificarCliente() throws IOException {
         String nombre, apellido;
         int id = 0, op = 0;
@@ -208,7 +213,7 @@ public class ManejoProductosMK2 {
             System.out.println("No existe ese cliente");
         }
     }
-    
+
     private static void eliminarCliente() {
         int id = 0;
         listarClientes();
@@ -226,11 +231,28 @@ public class ManejoProductosMK2 {
             System.out.println("No existe ese cliente");
         }
     }
-    
+
     private static void mostrarFactura() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        listarClientes();
+        int id = 0;
+        try {
+            System.out.println("Ingrese el id del cliente para agregar productos");
+            id = Integer.parseInt(bf.readLine().trim());
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Ingrese un id valido");
+        }
+        Cliente tmp = tienda.retornarCliente(id);
+        if (tmp != null) {
+            Factura f = new Factura();
+            Factura temp = f.generarFactura(tmp);
+            System.out.println(temp.getIdFactura());
+            System.out.println(temp.getNombreCliente());
+            System.out.println(temp.getTotal());
+        }else{
+            System.out.println("No existe ese cliente");
+        }
     }
-    
+
     private static void agregarProductosCliente() {
         int id = 0, idProd = 0, cantPro = 0;
         listarClientes();
@@ -256,16 +278,27 @@ public class ManejoProductosMK2 {
                 } catch (IOException | NumberFormatException e) {
                     System.out.println("Ingrese un numero valido");
                 }
-            } while (cantPro > 0);
-            
+            } while (cantPro < 0);
+
             Producto temp = tienda.retornarProducto(idProd);
+
             if (temp != null) {
                 //Se debe crear un objeto temporal con el id y la cantidad, para realizar los calculos y descontar las unidades disponibles
-                // con temp se debe crear un objeto con solo 3 atributos, id, nombre y cantidad
-                Producto tempo = new Producto(temp.getIdProd(), temp.getNombre(), cantPro);
-                
-                tmp.agregarProducto(temp);
-                tienda.descontarProducto(cantPro, temp.getIdProd());
+                // con temp se debe crear un objeto con solo 3 atributos, id, nombre, cantidad y precio
+                if (tmp.getProductos().isEmpty()) {
+                    Producto tempo = new Producto(temp.getIdProd(), temp.getNombre(), cantPro, temp.getPrecio());
+                    tmp.agregarProducto(tempo);
+                    tienda.descontarProducto(cantPro, temp.getIdProd());
+                } else {
+                    for (int i = 0; i < tmp.getProductos().size(); i++) {
+
+                        if (tmp.getProductos().get(i).getIdProd() == idProd) {
+                            tmp.getProductos().get(i).setCantidad(tmp.getProductos().get(i).getCantidad() + cantPro);
+                            tienda.descontarProducto(cantPro, temp.getIdProd());
+                        }
+                    }
+                }
+
                 System.out.println("Se agrego el producto");
             } else {
                 System.out.println("El producto no existe");
@@ -274,17 +307,17 @@ public class ManejoProductosMK2 {
             System.out.println("No existe ese cliente");
         }
     }
-    
+
     private static void modificarListaProductos() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
     private static void eliminarProdLista() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
     private static void listarProductos() {
-         System.out.println("Listando de productos");
+        System.out.println("Listando de productos");
         if (tienda.retornarProductos().size() > 0) {
             for (int i = 0; i < tienda.retornarProductos().size(); i++) {
                 System.out.println(tienda.retornarProductos().get(i).toString());
@@ -294,7 +327,7 @@ public class ManejoProductosMK2 {
             System.out.println("");
         }
     }
-    
+
     private static void crearProducto() throws IOException {
         String nombre, marca;
         int cantidad = 0, precio = 0;
@@ -330,7 +363,7 @@ public class ManejoProductosMK2 {
         System.out.println("Se creo el producto");
         System.out.println("");
     }
-    
+
     private static void modificarProducto() throws IOException {
         String nombre, marca;
         int cantidad = 0, id = 0, op = 0, precio = 0;
@@ -407,7 +440,7 @@ public class ManejoProductosMK2 {
             System.out.println("El producto no existe");
         }
     }
-    
+
     private static void eliminarProducto() {
         int id = 0;
         listarProductos();
